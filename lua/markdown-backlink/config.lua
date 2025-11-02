@@ -30,6 +30,9 @@ M.defaults = {
 
   -- Show notifications for scan results
   scan_notify = true,
+
+  -- Use Telescope for pickers if available (auto-detect, fallback to quickfix)
+  telescope_enabled = true,
 }
 
 -- Current configuration (will be merged with user config)

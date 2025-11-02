@@ -129,6 +129,9 @@ require("markdown-backlink").setup({
 
   -- Show notifications for scan results
   scan_notify = true,
+
+  -- Use Telescope for pickers if available (auto-detect, fallback to quickfix)
+  telescope_enabled = true,
 })
 ```
 
@@ -244,7 +247,66 @@ For the best markdown experience:
 -- OR if you want more features:
 { "jakewvincent/mkdnflow.nvim" }  -- Markdown notebook features
 { "epwalsh/obsidian.nvim" }       -- Full Obsidian integration
+
+-- Enhanced UI (recommended!)
+{ "nvim-telescope/telescope.nvim" }  -- Beautiful fuzzy finder UI
 ```
+
+## Telescope Integration ✨
+
+This plugin includes **optional** Telescope integration for an enhanced UX! If Telescope is installed, all commands automatically use Telescope's beautiful UI with fuzzy search, live preview, and custom actions.
+
+### Installation
+
+```lua
+{
+  "randerson911/markdown-backlinks.nvim",
+  dependencies = {
+    "nvim-telescope/telescope.nvim",  -- Optional, enables enhanced UI
+    "nvim-lua/plenary.nvim",          -- Required by Telescope
+  },
+  config = function()
+    require("markdown-backlink").setup({
+      telescope_enabled = true,  -- Auto-detect and use Telescope (default: true)
+    })
+
+    -- Load telescope extension
+    require("telescope").load_extension("markdown_backlink")
+  end,
+}
+```
+
+### Telescope Commands
+
+Once installed, you can use Telescope pickers directly:
+
+```vim
+" Direct telescope pickers (beautiful UI!)
+:Telescope markdown_backlink backlinks
+:Telescope markdown_backlink orphans
+:Telescope markdown_backlink dead_links
+
+" Or use the existing commands (auto-detect telescope)
+:MarkdownBacklinkList       " Uses Telescope if available, quickfix otherwise
+:MarkdownBacklinkOrphans    " Uses Telescope if available, quickfix otherwise
+:MarkdownBacklinkDeadLinks  " Uses Telescope if available, quickfix otherwise
+```
+
+### Telescope Keybindings
+
+When using Telescope pickers, these keybindings are available:
+
+| Key | Action |
+|-----|--------|
+| `<CR>` | Open file at location |
+| `<C-v>` | Open in vertical split |
+| `<C-s>` | Open in horizontal split |
+| `<C-t>` | Open in new tab |
+| `<C-y>` | Yank file path to clipboard *(coming soon)* |
+
+### Fallback Behavior
+
+If Telescope is not installed or `telescope_enabled = false`, all commands gracefully fall back to using Neovim's native quickfix list. No errors, no dependencies required!
 
 ## Features
 
@@ -261,14 +323,16 @@ For the best markdown experience:
 - ✅ **Dead Link Detection** - Find broken links
 - ✅ **Auto-scan on Open** - Optional dead link scanning when opening files
 - ✅ **Quickfix Integration** - Results displayed in native quickfix list
+- ✅ **Telescope Integration** - Beautiful fuzzy-finder UI (optional, auto-detected)
 
 ## Roadmap
 
 - [x] Backlink browser (:MarkdownBacklinkList)
 - [x] Orphaned note detection
 - [x] Dead link detection
+- [x] Telescope integration for better UX
 - [ ] File rename with auto-update all references
-- [ ] Telescope/FZF integration for better UX
+- [ ] FZF-lua integration (alternative to Telescope)
 - [ ] Support for custom backlink section names
 - [ ] Configurable backlink list format (bullets, numbered, etc.)
 - [ ] Graph view integration (via external tools)

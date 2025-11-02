@@ -119,6 +119,23 @@ function M.list_backlinks()
     return
   end
 
+  local config = require("markdown-backlink.config")
+
+  -- Try Telescope first if enabled
+  if config.get_value("telescope_enabled") then
+    local has_telescope, telescope_module = pcall(require, "markdown-backlink.telescope")
+    if has_telescope and telescope_module.has_telescope then
+      telescope_module.pickers.backlinks()
+      return
+    end
+  end
+
+  -- Fallback to quickfix
+  M._list_backlinks_quickfix()
+end
+
+-- Quickfix version of list_backlinks (fallback)
+function M._list_backlinks_quickfix()
   local backlink_finder = require("markdown-backlink.backlink_finder")
   local utils = require("markdown-backlink.utils")
 
@@ -157,6 +174,23 @@ function M.find_orphans()
     return
   end
 
+  local config = require("markdown-backlink.config")
+
+  -- Try Telescope first if enabled
+  if config.get_value("telescope_enabled") then
+    local has_telescope, telescope_module = pcall(require, "markdown-backlink.telescope")
+    if has_telescope and telescope_module.has_telescope then
+      telescope_module.pickers.orphans()
+      return
+    end
+  end
+
+  -- Fallback to quickfix
+  M._find_orphans_quickfix()
+end
+
+-- Quickfix version of find_orphans (fallback)
+function M._find_orphans_quickfix()
   local backlink_finder = require("markdown-backlink.backlink_finder")
   local utils = require("markdown-backlink.utils")
 
@@ -187,10 +221,26 @@ function M.find_dead_links(args)
     return
   end
 
+  local config = require("markdown-backlink.config")
+  local check_all = args.args == "all"
+
+  -- Try Telescope first if enabled
+  if config.get_value("telescope_enabled") then
+    local has_telescope, telescope_module = pcall(require, "markdown-backlink.telescope")
+    if has_telescope and telescope_module.has_telescope then
+      telescope_module.pickers.dead_links({ all = check_all })
+      return
+    end
+  end
+
+  -- Fallback to quickfix
+  M._find_dead_links_quickfix(check_all)
+end
+
+-- Quickfix version of find_dead_links (fallback)
+function M._find_dead_links_quickfix(check_all)
   local backlink_finder = require("markdown-backlink.backlink_finder")
   local utils = require("markdown-backlink.utils")
-
-  local check_all = args.args == "all"
 
   if check_all then
     utils.notify("Searching for dead links in workspace...")
