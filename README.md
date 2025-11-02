@@ -83,6 +83,18 @@ Once installed, the plugin works automatically:
 
 " Check for missing backlinks in current file
 :MarkdownBacklinkCheck
+
+" List all backlinks to current file (opens in quickfix)
+:MarkdownBacklinkList
+
+" Find all orphaned notes (notes with no backlinks)
+:MarkdownBacklinkOrphans
+
+" Find dead links in current file
+:MarkdownBacklinkDeadLinks
+
+" Find dead links in entire workspace
+:MarkdownBacklinkDeadLinks all
 ```
 
 ## Configuration
@@ -108,6 +120,15 @@ require("markdown-backlink").setup({
   -- Only create backlinks for files within the same workspace
   -- (prevents linking to files outside your notes directory)
   workspace_only = true,
+
+  -- Debounce time for text changes (in milliseconds)
+  debounce_ms = 500,
+
+  -- Auto-scan for dead links when opening markdown buffers
+  scan_on_open = false,
+
+  -- Show notifications for scan results
+  scan_notify = true,
 })
 ```
 
@@ -171,8 +192,11 @@ opts = {
 |---------|-------------|
 | `:MarkdownBacklinkCreate` | Manually trigger backlink creation for links in current buffer |
 | `:MarkdownBacklinkCheck` | List all links that are missing backlinks |
-| `:MarkdownBacklinkDisable` | Temporarily disable auto-creation |
-| `:MarkdownBacklinkEnable` | Re-enable auto-creation |
+| `:MarkdownBacklinkList` | Show all backlinks to current file (opens quickfix list) |
+| `:MarkdownBacklinkOrphans` | Find all orphaned notes (notes with no backlinks) |
+| `:MarkdownBacklinkDeadLinks [all]` | Find dead/broken links (use `all` for entire workspace) |
+| `:MarkdownBacklinkEnable` | Enable automatic backlink creation |
+| `:MarkdownBacklinkDisable` | Disable automatic backlink creation |
 
 ## Keymaps
 
@@ -182,6 +206,9 @@ No default keymaps are provided. Add your own:
 -- Example keymaps (add to your config)
 vim.keymap.set("n", "<leader>mb", ":MarkdownBacklinkCreate<CR>", { desc = "Create backlinks" })
 vim.keymap.set("n", "<leader>mc", ":MarkdownBacklinkCheck<CR>", { desc = "Check backlinks" })
+vim.keymap.set("n", "<leader>ml", ":MarkdownBacklinkList<CR>", { desc = "List backlinks" })
+vim.keymap.set("n", "<leader>mo", ":MarkdownBacklinkOrphans<CR>", { desc = "Find orphans" })
+vim.keymap.set("n", "<leader>md", ":MarkdownBacklinkDeadLinks<CR>", { desc = "Find dead links" })
 ```
 
 ## Autocmds
@@ -191,6 +218,7 @@ The plugin automatically creates these autocmds for markdown files:
 - `InsertLeave` - Detects links when exiting insert mode
 - `TextChanged` - Detects links when text changes in normal mode
 - `BufWritePost` - Ensures backlinks are synced on save
+- `BufReadPost` - Auto-scans for dead links on buffer open (if `scan_on_open` enabled)
 
 ## Compatibility
 
@@ -218,12 +246,34 @@ For the best markdown experience:
 { "epwalsh/obsidian.nvim" }       -- Full Obsidian integration
 ```
 
+## Features
+
+### Core Features ✅
+- ✅ Automatic bidirectional link creation
+- ✅ Plugin-agnostic (works with any markdown tool)
+- ✅ Event-driven architecture (no filesystem scanning)
+- ✅ Markdown `[text](path)` and Wiki `[[path]]` link support
+- ✅ Configurable backlink format
+
+### Quality of Life Features ✅ (NEW!)
+- ✅ **Backlink Browser** - View all backlinks to current note
+- ✅ **Orphan Detection** - Find notes with no backlinks
+- ✅ **Dead Link Detection** - Find broken links
+- ✅ **Auto-scan on Open** - Optional dead link scanning when opening files
+- ✅ **Quickfix Integration** - Results displayed in native quickfix list
+
 ## Roadmap
 
+- [x] Backlink browser (:MarkdownBacklinkList)
+- [x] Orphaned note detection
+- [x] Dead link detection
+- [ ] File rename with auto-update all references
+- [ ] Telescope/FZF integration for better UX
 - [ ] Support for custom backlink section names
 - [ ] Configurable backlink list format (bullets, numbered, etc.)
-- [ ] Orphaned link detection
 - [ ] Graph view integration (via external tools)
+- [ ] LSP diagnostics for dead links
+- [ ] Heading/anchor link support
 
 ## Contributing
 

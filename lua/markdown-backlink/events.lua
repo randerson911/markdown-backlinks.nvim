@@ -38,6 +38,15 @@ function M.setup()
     end,
   })
 
+  -- Auto-scan on buffer open (if enabled)
+  vim.api.nvim_create_autocmd("BufReadPost", {
+    group = group,
+    pattern = "*.md",
+    callback = function(args)
+      M._on_buffer_open(args.buf)
+    end,
+  })
+
   -- Clean up cache when buffer is deleted
   vim.api.nvim_create_autocmd("BufDelete", {
     group = group,
@@ -197,6 +206,47 @@ function M._update_cache(bufnr, content_hash, links)
     known_links = link_targets,
     last_check = vim.fn.localtime(),
   }
+end
+
+-- Handle buffer open event (auto-scan for dead links)
+---@param bufnr number Buffer number
+function M._on_buffer_open(bufnr)
+  -- Check if scan_on_open is enabled
+  if not config.get_value("scan_on_open") then
+    return
+  end
+
+  -- Ensure buffer is valid
+  if not vim.api.nvim_buf_is_valid(bufnr) then
+    return
+  end
+
+  -- Get current file path
+  local current_file = vim.api.nvim_buf_get_name(bufnr)
+
+  if current_file == "" or not current_file:match("%.md$") then
+    return
+  end
+
+  -- Defer scan to not block buffer loading
+  vim.defer_fn(function()
+    if not vim.api.nvim_buf_is_valid(bufnr) then
+      return
+    end
+
+    local backlink_finder = require("markdown-backlink.backlink_finder")
+
+    -- Find dead links in this buffer
+    local dead_links = backlink_finder.find_dead_links_in_file(current_file)
+
+    if #dead_links > 0 and config.get_value("scan_notify") then
+      local filename = utils.get_filename(current_file)
+      utils.notify(
+        string.format("%s has %d dead link(s). Use :MarkdownBacklinkDeadLinks to see them.", filename, #dead_links),
+        vim.log.levels.WARN
+      )
+    end
+  end, 100) -- Small delay to not interfere with buffer loading
 end
 
 return M

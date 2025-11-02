@@ -112,6 +112,144 @@ function M.check_backlinks()
   end
 end
 
+-- List all backlinks to current file
+function M.list_backlinks()
+  if not M._initialized then
+    vim.notify("markdown-backlink: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
+    return
+  end
+
+  local backlink_finder = require("markdown-backlink.backlink_finder")
+  local utils = require("markdown-backlink.utils")
+
+  local current_file = vim.api.nvim_buf_get_name(0)
+
+  if current_file == "" or not current_file:match("%.md$") then
+    vim.notify("markdown-backlink: Not a markdown file", vim.log.levels.WARN)
+    return
+  end
+
+  utils.notify("Searching for backlinks...")
+
+  -- Find all backlinks to current file
+  local backlinks = backlink_finder.find_backlinks_to_file(current_file)
+
+  if #backlinks == 0 then
+    utils.notify("No backlinks found to current file", vim.log.levels.INFO)
+    return
+  end
+
+  -- Format for quickfix list
+  local qf_list = backlink_finder.format_backlinks_for_quickfix(backlinks, current_file)
+
+  -- Set quickfix list
+  vim.fn.setqflist(qf_list, "r")
+  vim.cmd("copen")
+
+  local filename = utils.get_filename(current_file)
+  utils.notify(string.format("Found %d backlink(s) to %s", #backlinks, filename))
+end
+
+-- Find all orphaned files (files with no backlinks)
+function M.find_orphans()
+  if not M._initialized then
+    vim.notify("markdown-backlink: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
+    return
+  end
+
+  local backlink_finder = require("markdown-backlink.backlink_finder")
+  local utils = require("markdown-backlink.utils")
+
+  utils.notify("Searching for orphaned notes...")
+
+  -- Find all orphaned files
+  local orphans = backlink_finder.find_orphaned_files()
+
+  if #orphans == 0 then
+    utils.notify("No orphaned notes found! All notes have backlinks.", vim.log.levels.INFO)
+    return
+  end
+
+  -- Format for quickfix list
+  local qf_list = backlink_finder.format_orphans_for_quickfix(orphans)
+
+  -- Set quickfix list
+  vim.fn.setqflist(qf_list, "r")
+  vim.cmd("copen")
+
+  utils.notify(string.format("Found %d orphaned note(s)", #orphans))
+end
+
+-- Find all dead links in current buffer or workspace
+function M.find_dead_links(args)
+  if not M._initialized then
+    vim.notify("markdown-backlink: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
+    return
+  end
+
+  local backlink_finder = require("markdown-backlink.backlink_finder")
+  local utils = require("markdown-backlink.utils")
+
+  local check_all = args.args == "all"
+
+  if check_all then
+    utils.notify("Searching for dead links in workspace...")
+
+    -- Find all dead links in workspace
+    local dead_links = backlink_finder.find_all_dead_links()
+
+    if #dead_links == 0 then
+      utils.notify("No dead links found in workspace!", vim.log.levels.INFO)
+      return
+    end
+
+    -- Format for quickfix list
+    local qf_list = backlink_finder.format_dead_links_for_quickfix(dead_links)
+
+    -- Set quickfix list
+    vim.fn.setqflist(qf_list, "r")
+    vim.cmd("copen")
+
+    utils.notify(string.format("Found %d dead link(s) in workspace", #dead_links))
+  else
+    -- Check only current buffer
+    local current_file = vim.api.nvim_buf_get_name(0)
+
+    if current_file == "" or not current_file:match("%.md$") then
+      vim.notify("markdown-backlink: Not a markdown file", vim.log.levels.WARN)
+      return
+    end
+
+    utils.notify("Checking for dead links in current file...")
+
+    local dead_links = backlink_finder.find_dead_links_in_file(current_file)
+
+    if #dead_links == 0 then
+      utils.notify("No dead links found in current file!", vim.log.levels.INFO)
+      return
+    end
+
+    -- Format for quickfix list (wrap in file context)
+    local dead_links_with_file = {}
+    for _, link in ipairs(dead_links) do
+      table.insert(dead_links_with_file, {
+        file = current_file,
+        target = link.target,
+        line_num = link.line_num,
+        text = link.text,
+      })
+    end
+
+    local qf_list = backlink_finder.format_dead_links_for_quickfix(dead_links_with_file)
+
+    -- Set quickfix list
+    vim.fn.setqflist(qf_list, "r")
+    vim.cmd("copen")
+
+    utils.notify(string.format("Found %d dead link(s) in current file", #dead_links))
+  end
+end
+
 -- Register plugin commands
 function M._register_commands()
   -- Manual backlink creation
@@ -126,6 +264,31 @@ function M._register_commands()
     M.check_backlinks()
   end, {
     desc = "Check for missing backlinks in current buffer",
+  })
+
+  -- List all backlinks to current file
+  vim.api.nvim_create_user_command("MarkdownBacklinkList", function()
+    M.list_backlinks()
+  end, {
+    desc = "List all backlinks to current file",
+  })
+
+  -- Find orphaned notes
+  vim.api.nvim_create_user_command("MarkdownBacklinkOrphans", function()
+    M.find_orphans()
+  end, {
+    desc = "Find all orphaned notes (notes with no backlinks)",
+  })
+
+  -- Find dead links
+  vim.api.nvim_create_user_command("MarkdownBacklinkDeadLinks", function(args)
+    M.find_dead_links(args)
+  end, {
+    nargs = "?",
+    complete = function()
+      return { "all" }
+    end,
+    desc = "Find dead links (use 'all' to check entire workspace)",
   })
 
   -- Enable auto-creation

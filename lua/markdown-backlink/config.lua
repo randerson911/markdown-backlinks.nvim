@@ -24,6 +24,12 @@ M.defaults = {
 
   -- Debounce time for text changes (in milliseconds)
   debounce_ms = 500,
+
+  -- Auto-scan for dead links when opening markdown buffers
+  scan_on_open = false,
+
+  -- Show notifications for scan results
+  scan_notify = true,
 }
 
 -- Current configuration (will be merged with user config)
