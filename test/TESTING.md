@@ -1,4 +1,4 @@
-# Testing Guide for markdown-backlink.nvim
+# Testing Guide for markdown-backlinks.nvim
 
 This guide provides step-by-step instructions for manually testing all plugin capabilities.
 
@@ -8,8 +8,8 @@ This guide provides step-by-step instructions for manually testing all plugin ca
 
 ```lua
 {
-  "yourusername/markdown-backlink.nvim",
-  dir = "/opt/projects/NeoVim/markdown-backlink",  -- Use local directory
+  "yourusername/markdown-backlinks.nvim",
+  dir = "/opt/projects/NeoVim/markdown-backlinks",  -- Use local directory
   ft = "markdown",
   opts = {
     notify = true,  -- Enable notifications to see what's happening
@@ -21,7 +21,7 @@ This guide provides step-by-step instructions for manually testing all plugin ca
 
 3. **Navigate to test directory**:
 ```bash
-cd /opt/projects/NeoVim/markdown-backlink/test/fixtures/notes
+cd /opt/projects/NeoVim/markdown-backlinks/test/fixtures/notes
 nvim .
 ```
 
@@ -248,7 +248,7 @@ If you have obsidian.nvim installed:
 ### Check Plugin is Loaded
 
 ```vim
-:lua print(vim.inspect(package.loaded["markdown-backlink"]))
+:lua print(vim.inspect(package.loaded["markdown-backlinks"]))
 ```
 
 Should show the plugin module.
@@ -269,7 +269,7 @@ Temporarily modify `utils.lua` to always show notifications:
 function M.notify(msg, level)
   -- Remove config check for debugging
   level = level or vim.log.levels.INFO
-  vim.notify("markdown-backlink: " .. msg, level)
+  vim.notify("markdown-backlinks: " .. msg, level)
 end
 ```
 
@@ -335,7 +335,7 @@ test/fixtures/notes/
 To reset test fixtures to original state:
 
 ```bash
-cd /opt/projects/NeoVim/markdown-backlink
+cd /opt/projects/NeoVim/markdown-backlinks
 git checkout test/fixtures/
 # or manually remove ## Backlinks sections from files
 ```
