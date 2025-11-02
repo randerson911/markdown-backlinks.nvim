@@ -1,4 +1,4 @@
--- Custom Telescope actions for markdown-backlink.nvim
+-- Custom Telescope actions for markdown-backlinks.nvim
 
 local has_telescope, telescope = pcall(require, "telescope")
 if not has_telescope then
@@ -66,8 +66,8 @@ function M.create_backlink(prompt_bufnr)
     return
   end
 
-  local backlink_manager = require("markdown-backlink.backlink_manager")
-  local utils = require("markdown-backlink.utils")
+  local backlink_manager = require("markdown-backlinks.backlink_manager")
+  local utils = require("markdown-backlinks.utils")
   local current_file = vim.api.nvim_buf_get_name(0)
 
   -- Create backlink in selected file pointing back to current file
@@ -90,7 +90,7 @@ function M.yank_path(prompt_bufnr)
     return
   end
 
-  local utils = require("markdown-backlink.utils")
+  local utils = require("markdown-backlinks.utils")
   local relative_path = vim.fn.fnamemodify(selection.filename, ":~:.")
 
   -- Copy to clipboard
@@ -110,8 +110,8 @@ function M.yank_markdown_link(prompt_bufnr)
     return
   end
 
-  local utils = require("markdown-backlink.utils")
-  local path_resolver = require("markdown-backlink.path_resolver")
+  local utils = require("markdown-backlinks.utils")
+  local path_resolver = require("markdown-backlinks.path_resolver")
   local current_file = vim.api.nvim_buf_get_name(0)
 
   -- Get relative path from current file to selected file
@@ -138,7 +138,7 @@ function M.delete_orphan(prompt_bufnr)
     return
   end
 
-  local utils = require("markdown-backlink.utils")
+  local utils = require("markdown-backlinks.utils")
   local filename = utils.get_filename(selection.filename)
 
   -- Ask for confirmation
@@ -174,7 +174,7 @@ function M.fix_dead_link(prompt_bufnr)
     return
   end
 
-  local utils = require("markdown-backlink.utils")
+  local utils = require("markdown-backlinks.utils")
 
   -- Close picker first
   actions.close(prompt_bufnr)

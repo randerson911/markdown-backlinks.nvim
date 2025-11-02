@@ -1,7 +1,7 @@
 -- Path resolution for markdown links
 -- Resolves relative paths to absolute paths
 
-local utils = require("markdown-backlink.utils")
+local utils = require("markdown-backlinks.utils")
 
 local M = {}
 

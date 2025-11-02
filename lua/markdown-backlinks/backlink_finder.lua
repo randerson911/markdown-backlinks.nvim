@@ -1,9 +1,9 @@
 -- Backlink finder for advanced features
 -- Find backlinks, orphans, and dead links across workspace
 
-local utils = require("markdown-backlink.utils")
-local link_detector = require("markdown-backlink.link_detector")
-local path_resolver = require("markdown-backlink.path_resolver")
+local utils = require("markdown-backlinks.utils")
+local link_detector = require("markdown-backlinks.link_detector")
+local path_resolver = require("markdown-backlinks.path_resolver")
 
 local M = {}
 

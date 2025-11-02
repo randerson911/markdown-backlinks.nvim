@@ -1,4 +1,4 @@
--- markdown-backlink.nvim
+-- markdown-backlinks.nvim
 -- Automatic bidirectional link management for markdown files
 
 local M = {}
@@ -11,11 +11,11 @@ M._initialized = false
 ---@param opts table|nil User configuration
 function M.setup(opts)
   -- Load and setup configuration
-  local config = require("markdown-backlink.config")
+  local config = require("markdown-backlinks.config")
   config.setup(opts)
 
   -- Initialize event handlers
-  local events = require("markdown-backlink.events")
+  local events = require("markdown-backlinks.events")
   events.setup()
 
   -- Register commands
@@ -28,13 +28,13 @@ end
 -- Enable automatic backlink creation
 function M.enable()
   M._enabled = true
-  require("markdown-backlink.utils").notify("Automatic backlink creation enabled")
+  require("markdown-backlinks.utils").notify("Automatic backlink creation enabled")
 end
 
 -- Disable automatic backlink creation
 function M.disable()
   M._enabled = false
-  require("markdown-backlink.utils").notify("Automatic backlink creation disabled")
+  require("markdown-backlinks.utils").notify("Automatic backlink creation disabled")
 end
 
 -- Check if plugin is enabled
@@ -46,31 +46,31 @@ end
 -- Manually create backlinks for current buffer
 function M.create_backlinks()
   if not M._initialized then
-    vim.notify("markdown-backlink: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
+    vim.notify("markdown-backlinks: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
     return
   end
 
   local bufnr = vim.api.nvim_get_current_buf()
-  local events = require("markdown-backlink.events")
+  local events = require("markdown-backlinks.events")
   events.process_buffer(bufnr)
 end
 
 -- Check for missing backlinks in current buffer
 function M.check_backlinks()
   if not M._initialized then
-    vim.notify("markdown-backlink: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
+    vim.notify("markdown-backlinks: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
     return
   end
 
-  local link_detector = require("markdown-backlink.link_detector")
-  local path_resolver = require("markdown-backlink.path_resolver")
-  local backlink_manager = require("markdown-backlink.backlink_manager")
+  local link_detector = require("markdown-backlinks.link_detector")
+  local path_resolver = require("markdown-backlinks.path_resolver")
+  local backlink_manager = require("markdown-backlinks.backlink_manager")
 
   local bufnr = vim.api.nvim_get_current_buf()
   local current_file = vim.api.nvim_buf_get_name(bufnr)
 
   if current_file == "" or not current_file:match("%.md$") then
-    vim.notify("markdown-backlink: Not a markdown file", vim.log.levels.WARN)
+    vim.notify("markdown-backlinks: Not a markdown file", vim.log.levels.WARN)
     return
   end
 
@@ -78,7 +78,7 @@ function M.check_backlinks()
   local links = link_detector.find_links_in_buffer(bufnr)
 
   if #links == 0 then
-    vim.notify("markdown-backlink: No links found in current buffer", vim.log.levels.INFO)
+    vim.notify("markdown-backlinks: No links found in current buffer", vim.log.levels.INFO)
     return
   end
 
@@ -102,9 +102,9 @@ function M.check_backlinks()
 
   -- Report results
   if #missing == 0 then
-    vim.notify("markdown-backlink: All links have backlinks!", vim.log.levels.INFO)
+    vim.notify("markdown-backlinks: All links have backlinks!", vim.log.levels.INFO)
   else
-    local msg = string.format("markdown-backlink: %d link(s) missing backlinks:", #missing)
+    local msg = string.format("markdown-backlinks: %d link(s) missing backlinks:", #missing)
     for _, item in ipairs(missing) do
       msg = msg .. string.format("\n  Line %d: %s", item.line, item.target)
     end
@@ -115,15 +115,15 @@ end
 -- List all backlinks to current file
 function M.list_backlinks()
   if not M._initialized then
-    vim.notify("markdown-backlink: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
+    vim.notify("markdown-backlinks: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
     return
   end
 
-  local config = require("markdown-backlink.config")
+  local config = require("markdown-backlinks.config")
 
   -- Try Telescope first if enabled
   if config.get_value("telescope_enabled") then
-    local has_telescope, telescope_module = pcall(require, "markdown-backlink.telescope")
+    local has_telescope, telescope_module = pcall(require, "markdown-backlinks.telescope")
     if has_telescope and telescope_module.has_telescope then
       telescope_module.pickers.backlinks()
       return
@@ -136,13 +136,13 @@ end
 
 -- Quickfix version of list_backlinks (fallback)
 function M._list_backlinks_quickfix()
-  local backlink_finder = require("markdown-backlink.backlink_finder")
-  local utils = require("markdown-backlink.utils")
+  local backlink_finder = require("markdown-backlinks.backlink_finder")
+  local utils = require("markdown-backlinks.utils")
 
   local current_file = vim.api.nvim_buf_get_name(0)
 
   if current_file == "" or not current_file:match("%.md$") then
-    vim.notify("markdown-backlink: Not a markdown file", vim.log.levels.WARN)
+    vim.notify("markdown-backlinks: Not a markdown file", vim.log.levels.WARN)
     return
   end
 
@@ -170,15 +170,15 @@ end
 -- Find all orphaned files (files with no backlinks)
 function M.find_orphans()
   if not M._initialized then
-    vim.notify("markdown-backlink: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
+    vim.notify("markdown-backlinks: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
     return
   end
 
-  local config = require("markdown-backlink.config")
+  local config = require("markdown-backlinks.config")
 
   -- Try Telescope first if enabled
   if config.get_value("telescope_enabled") then
-    local has_telescope, telescope_module = pcall(require, "markdown-backlink.telescope")
+    local has_telescope, telescope_module = pcall(require, "markdown-backlinks.telescope")
     if has_telescope and telescope_module.has_telescope then
       telescope_module.pickers.orphans()
       return
@@ -191,8 +191,8 @@ end
 
 -- Quickfix version of find_orphans (fallback)
 function M._find_orphans_quickfix()
-  local backlink_finder = require("markdown-backlink.backlink_finder")
-  local utils = require("markdown-backlink.utils")
+  local backlink_finder = require("markdown-backlinks.backlink_finder")
+  local utils = require("markdown-backlinks.utils")
 
   utils.notify("Searching for orphaned notes...")
 
@@ -217,16 +217,16 @@ end
 -- Find all dead links in current buffer or workspace
 function M.find_dead_links(args)
   if not M._initialized then
-    vim.notify("markdown-backlink: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
+    vim.notify("markdown-backlinks: Plugin not initialized. Call setup() first.", vim.log.levels.ERROR)
     return
   end
 
-  local config = require("markdown-backlink.config")
+  local config = require("markdown-backlinks.config")
   local check_all = args.args == "all"
 
   -- Try Telescope first if enabled
   if config.get_value("telescope_enabled") then
-    local has_telescope, telescope_module = pcall(require, "markdown-backlink.telescope")
+    local has_telescope, telescope_module = pcall(require, "markdown-backlinks.telescope")
     if has_telescope and telescope_module.has_telescope then
       telescope_module.pickers.dead_links({ all = check_all })
       return
@@ -239,8 +239,8 @@ end
 
 -- Quickfix version of find_dead_links (fallback)
 function M._find_dead_links_quickfix(check_all)
-  local backlink_finder = require("markdown-backlink.backlink_finder")
-  local utils = require("markdown-backlink.utils")
+  local backlink_finder = require("markdown-backlinks.backlink_finder")
+  local utils = require("markdown-backlinks.utils")
 
   if check_all then
     utils.notify("Searching for dead links in workspace...")
@@ -266,7 +266,7 @@ function M._find_dead_links_quickfix(check_all)
     local current_file = vim.api.nvim_buf_get_name(0)
 
     if current_file == "" or not current_file:match("%.md$") then
-      vim.notify("markdown-backlink: Not a markdown file", vim.log.levels.WARN)
+      vim.notify("markdown-backlinks: Not a markdown file", vim.log.levels.WARN)
       return
     end
 

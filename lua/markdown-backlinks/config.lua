@@ -1,4 +1,4 @@
--- Configuration management for markdown-backlink.nvim
+-- Configuration management for markdown-backlinks.nvim
 
 local M = {}
 
@@ -55,7 +55,7 @@ function M.validate()
   -- Validate link_format
   if M.options.link_format ~= "markdown" and M.options.link_format ~= "wiki" then
     vim.notify(
-      "markdown-backlink: Invalid link_format '" .. M.options.link_format .. "'. Using 'markdown'.",
+      "markdown-backlinks: Invalid link_format '" .. M.options.link_format .. "'. Using 'markdown'.",
       vim.log.levels.WARN
     )
     M.options.link_format = "markdown"
@@ -64,7 +64,7 @@ function M.validate()
   -- Validate debounce_ms
   if type(M.options.debounce_ms) ~= "number" or M.options.debounce_ms < 0 then
     vim.notify(
-      "markdown-backlink: Invalid debounce_ms. Using default 500ms.",
+      "markdown-backlinks: Invalid debounce_ms. Using default 500ms.",
       vim.log.levels.WARN
     )
     M.options.debounce_ms = 500
@@ -73,7 +73,7 @@ function M.validate()
   -- Validate backlinks_header starts with ##
   if not M.options.backlinks_header:match("^##%s") then
     vim.notify(
-      "markdown-backlink: backlinks_header must start with '## '. Using default.",
+      "markdown-backlinks: backlinks_header must start with '## '. Using default.",
       vim.log.levels.WARN
     )
     M.options.backlinks_header = M.defaults.backlinks_header

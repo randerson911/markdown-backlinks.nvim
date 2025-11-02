@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the requirements and implementation plan for integrating Telescope.nvim with markdown-backlink.nvim to provide enhanced UX for browsing backlinks, orphans, and dead links.
+This document outlines the requirements and implementation plan for integrating Telescope.nvim with markdown-backlinks.nvim to provide enhanced UX for browsing backlinks, orphans, and dead links.
 
 ## Complexity Assessment
 
@@ -50,7 +50,7 @@ This document outlines the requirements and implementation plan for integrating 
 
 ```
 lua/
-├── markdown-backlink/
+├── markdown-backlinks/
 │   ├── init.lua                    # Existing
 │   ├── backlink_finder.lua         # Existing
 │   └── telescope/
@@ -58,7 +58,7 @@ lua/
 │       ├── pickers.lua             # Custom pickers
 │       └── actions.lua             # Custom actions
 └── telescope/_extensions/
-    └── markdown_backlink.lua       # Telescope extension registration
+    └── markdown_backlinks.lua       # Telescope extension registration
 ```
 
 ---
@@ -70,13 +70,13 @@ lua/
 **Goal**: Create a basic Telescope picker for backlinks
 
 **Files to Create:**
-- `lua/markdown-backlink/telescope/pickers.lua`
-- `lua/telescope/_extensions/markdown_backlink.lua`
+- `lua/markdown-backlinks/telescope/pickers.lua`
+- `lua/telescope/_extensions/markdown_backlinks.lua`
 
 **Code Structure:**
 
 ```lua
--- lua/markdown-backlink/telescope/pickers.lua
+-- lua/markdown-backlinks/telescope/pickers.lua
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 local conf = require("telescope.config").values
@@ -88,7 +88,7 @@ local M = {}
 function M.backlinks(opts)
   opts = opts or {}
 
-  local backlink_finder = require("markdown-backlink.backlink_finder")
+  local backlink_finder = require("markdown-backlinks.backlink_finder")
   local current_file = vim.api.nvim_buf_get_name(0)
 
   -- Get backlinks
@@ -140,7 +140,7 @@ return M
 **Extension Registration:**
 
 ```lua
--- lua/telescope/_extensions/markdown_backlink.lua
+-- lua/telescope/_extensions/markdown_backlinks.lua
 local has_telescope, telescope = pcall(require, "telescope")
 
 if not has_telescope then
@@ -152,9 +152,9 @@ return telescope.register_extension({
     -- Optional: merge user config
   end,
   exports = {
-    backlinks = require("markdown-backlink.telescope.pickers").backlinks,
-    orphans = require("markdown-backlink.telescope.pickers").orphans,
-    dead_links = require("markdown-backlink.telescope.pickers").dead_links,
+    backlinks = require("markdown-backlinks.telescope.pickers").backlinks,
+    orphans = require("markdown-backlinks.telescope.pickers").orphans,
+    dead_links = require("markdown-backlinks.telescope.pickers").dead_links,
   },
 })
 ```
@@ -165,15 +165,15 @@ return telescope.register_extension({
 
 **Pickers to Implement:**
 
-1. **`:Telescope markdown_backlink backlinks`**
+1. **`:Telescope markdown_backlinks backlinks`**
    - Show backlinks to current file
    - Preview: Show the linking file with context
 
-2. **`:Telescope markdown_backlink orphans`**
+2. **`:Telescope markdown_backlinks orphans`**
    - Show all orphaned notes
    - Preview: Show the orphaned file content
 
-3. **`:Telescope markdown_backlink dead_links`**
+3. **`:Telescope markdown_backlinks dead_links`**
    - Show all dead links in workspace
    - Preview: Show the source file with broken link
 
@@ -184,7 +184,7 @@ return telescope.register_extension({
 **Custom Actions to Add:**
 
 ```lua
--- lua/markdown-backlink/telescope/actions.lua
+-- lua/markdown-backlinks/telescope/actions.lua
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 
@@ -201,7 +201,7 @@ end
 -- Create backlink immediately
 M.create_backlink = function(prompt_bufnr)
   local selection = action_state.get_selected_entry()
-  local backlink_manager = require("markdown-backlink.backlink_manager")
+  local backlink_manager = require("markdown-backlinks.backlink_manager")
   local current_file = vim.api.nvim_buf_get_name(0)
 
   backlink_manager.ensure_backlink(selection.filename, current_file)
@@ -227,7 +227,7 @@ return M
 
 ```lua
 attach_mappings = function(prompt_bufnr, map)
-  local custom_actions = require("markdown-backlink.telescope.actions")
+  local custom_actions = require("markdown-backlinks.telescope.actions")
 
   -- Default: <CR> opens file
   actions.select_default:replace(function()
@@ -261,13 +261,13 @@ local has_telescope = pcall(require, "telescope")
 
 if has_telescope then
   vim.api.nvim_create_user_command("MarkdownBacklinkListTelescope", function()
-    require("telescope").extensions.markdown_backlink.backlinks()
+    require("telescope").extensions.markdown_backlinks.backlinks()
   end, {
     desc = "List backlinks using Telescope",
   })
 
   -- OR just recommend users use:
-  -- :Telescope markdown_backlink backlinks
+  -- :Telescope markdown_backlinks backlinks
 end
 ```
 
@@ -280,7 +280,7 @@ function M.list_backlinks()
 
   if has_telescope then
     -- Use Telescope
-    require("telescope").extensions.markdown_backlink.backlinks()
+    require("telescope").extensions.markdown_backlinks.backlinks()
   else
     -- Fallback to quickfix
     M._list_backlinks_quickfix()
@@ -297,12 +297,12 @@ end
 ```lua
 -- In lazy.nvim config
 {
-  "randerson911/markdown-backlink.nvim",
+  "randerson911/markdown-backlinks.nvim",
   dependencies = {
     "nvim-telescope/telescope.nvim",  -- Optional but recommended
   },
   config = function()
-    require("markdown-backlink").setup({
+    require("markdown-backlinks").setup({
       -- Existing config...
 
       -- Telescope-specific options
@@ -322,7 +322,7 @@ end
     })
 
     -- Load telescope extension
-    require("telescope").load_extension("markdown_backlink")
+    require("telescope").load_extension("markdown_backlinks")
   end,
 }
 ```
@@ -364,12 +364,12 @@ end)
 
 ### Files to Create
 
-- [ ] `lua/markdown-backlink/telescope/init.lua`
-- [ ] `lua/markdown-backlink/telescope/pickers.lua`
-- [ ] `lua/markdown-backlink/telescope/actions.lua`
-- [ ] `lua/telescope/_extensions/markdown_backlink.lua`
-- [ ] Update `lua/markdown-backlink/init.lua` (add telescope commands)
-- [ ] Update `lua/markdown-backlink/config.lua` (add telescope config)
+- [ ] `lua/markdown-backlinks/telescope/init.lua`
+- [ ] `lua/markdown-backlinks/telescope/pickers.lua`
+- [ ] `lua/markdown-backlinks/telescope/actions.lua`
+- [ ] `lua/telescope/_extensions/markdown_backlinks.lua`
+- [ ] Update `lua/markdown-backlinks/init.lua` (add telescope commands)
+- [ ] Update `lua/markdown-backlinks/config.lua` (add telescope config)
 - [ ] Update `README.md` (document telescope integration)
 - [ ] Update `FEATURES.md` (mark as complete)
 

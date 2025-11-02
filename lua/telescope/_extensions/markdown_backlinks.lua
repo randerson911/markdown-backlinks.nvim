@@ -1,4 +1,4 @@
--- Telescope extension for markdown-backlink.nvim
+-- Telescope extension for markdown-backlinks.nvim
 -- Registers pickers with :Telescope markdown_backlink <picker>
 
 local has_telescope, telescope = pcall(require, "telescope")
@@ -7,10 +7,10 @@ if not has_telescope then
   error("This extension requires telescope.nvim (https://github.com/nvim-telescope/telescope.nvim)")
 end
 
-local has_plugin, markdown_backlink_telescope = pcall(require, "markdown-backlink.telescope")
+local has_plugin, markdown_backlink_telescope = pcall(require, "markdown-backlinks.telescope")
 
 if not has_plugin then
-  error("markdown-backlink.nvim telescope module not found")
+  error("markdown-backlinks.nvim telescope module not found")
 end
 
 return telescope.register_extension({

@@ -1,7 +1,7 @@
 -- Link detection for markdown files
 -- Finds markdown-style [text](path) and wiki-style [[path]] links
 
-local utils = require("markdown-backlink.utils")
+local utils = require("markdown-backlinks.utils")
 
 local M = {}
 

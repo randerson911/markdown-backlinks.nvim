@@ -1,9 +1,9 @@
 -- Backlink management
 -- Detects and inserts backlinks in markdown files
 
-local utils = require("markdown-backlink.utils")
-local path_resolver = require("markdown-backlink.path_resolver")
-local config = require("markdown-backlink.config")
+local utils = require("markdown-backlinks.utils")
+local path_resolver = require("markdown-backlinks.path_resolver")
+local config = require("markdown-backlinks.config")
 
 local M = {}
 

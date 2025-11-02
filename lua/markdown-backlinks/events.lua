@@ -1,11 +1,11 @@
--- Event handling for markdown-backlink.nvim
+-- Event handling for markdown-backlinks.nvim
 -- Listens to buffer events and triggers backlink creation
 
-local link_detector = require("markdown-backlink.link_detector")
-local path_resolver = require("markdown-backlink.path_resolver")
-local backlink_manager = require("markdown-backlink.backlink_manager")
-local utils = require("markdown-backlink.utils")
-local config = require("markdown-backlink.config")
+local link_detector = require("markdown-backlinks.link_detector")
+local path_resolver = require("markdown-backlinks.path_resolver")
+local backlink_manager = require("markdown-backlinks.backlink_manager")
+local utils = require("markdown-backlinks.utils")
+local config = require("markdown-backlinks.config")
 
 local M = {}
 
@@ -66,7 +66,7 @@ end
 ---@param skip_debounce boolean|nil Skip debouncing (for save events)
 function M._on_buffer_change(bufnr, skip_debounce)
   -- Check if plugin is enabled
-  local plugin = require("markdown-backlink")
+  local plugin = require("markdown-backlinks")
   if not plugin.is_enabled() then
     return
   end
@@ -234,7 +234,7 @@ function M._on_buffer_open(bufnr)
       return
     end
 
-    local backlink_finder = require("markdown-backlink.backlink_finder")
+    local backlink_finder = require("markdown-backlinks.backlink_finder")
 
     -- Find dead links in this buffer
     local dead_links = backlink_finder.find_dead_links_in_file(current_file)

@@ -1,4 +1,4 @@
-# markdown-backlink.nvim
+# markdown-backlinks.nvim
 
 A lightweight, event-driven NeoVim plugin that automatically manages bidirectional links in your markdown notes. This project was generated with Claude AI support. As in, I provided the idea and a couple technical details, and just troubleshooted it. 
 
@@ -45,7 +45,7 @@ use {
   "randerson911/markdown-backlinks.nvim",
   ft = "markdown",
   config = function()
-    require("markdown-backlink").setup({
+    require("markdown-backlinks").setup({
       -- Optional configuration
     })
   end
@@ -102,7 +102,7 @@ Once installed, the plugin works automatically:
 Default configuration:
 
 ```lua
-require("markdown-backlink").setup({
+require("markdown-backlinks").setup({
   -- Enable automatic backlink creation
   auto_create = true,
 
@@ -266,12 +266,12 @@ This plugin includes **optional** Telescope integration for an enhanced UX! If T
     "nvim-lua/plenary.nvim",          -- Required by Telescope
   },
   config = function()
-    require("markdown-backlink").setup({
+    require("markdown-backlinks").setup({
       telescope_enabled = true,  -- Auto-detect and use Telescope (default: true)
     })
 
     -- Load telescope extension
-    require("telescope").load_extension("markdown_backlink")
+    require("telescope").load_extension("markdown_backlinks")
   end,
 }
 ```
@@ -282,9 +282,9 @@ Once installed, you can use Telescope pickers directly:
 
 ```vim
 " Direct telescope pickers (beautiful UI!)
-:Telescope markdown_backlink backlinks
-:Telescope markdown_backlink orphans
-:Telescope markdown_backlink dead_links
+:Telescope markdown_backlinks backlinks
+:Telescope markdown_backlinks orphans
+:Telescope markdown_backlinks dead_links
 
 " Or use the existing commands (auto-detect telescope)
 :MarkdownBacklinkList       " Uses Telescope if available, quickfix otherwise

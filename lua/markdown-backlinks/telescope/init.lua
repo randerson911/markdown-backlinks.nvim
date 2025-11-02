@@ -1,4 +1,4 @@
--- Telescope integration for markdown-backlink.nvim
+-- Telescope integration for markdown-backlinks.nvim
 -- Entry point for telescope functionality
 
 local M = {}
@@ -11,7 +11,7 @@ if not M.has_telescope then
 end
 
 -- Export pickers
-M.pickers = require("markdown-backlink.telescope.pickers")
-M.actions = require("markdown-backlink.telescope.actions")
+M.pickers = require("markdown-backlinks.telescope.pickers")
+M.actions = require("markdown-backlinks.telescope.actions")
 
 return M

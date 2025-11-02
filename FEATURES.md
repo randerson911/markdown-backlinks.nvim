@@ -1,4 +1,4 @@
-# Feature Roadmap - markdown-backlink.nvim
+# Feature Roadmap - markdown-backlinks.nvim
 
 This document outlines potential quality of life features based on user research from similar plugins (obsidian.nvim, mkdnflow.nvim). Features are ranked by implementation complexity and user demand.
 

@@ -1,4 +1,4 @@
--- Telescope pickers for markdown-backlink.nvim
+-- Telescope pickers for markdown-backlinks.nvim
 
 local has_telescope, telescope = pcall(require, "telescope")
 if not has_telescope then
@@ -62,12 +62,12 @@ end
 function M.backlinks(opts)
   opts = opts or {}
 
-  local backlink_finder = require("markdown-backlink.backlink_finder")
-  local utils = require("markdown-backlink.utils")
+  local backlink_finder = require("markdown-backlinks.backlink_finder")
+  local utils = require("markdown-backlinks.utils")
   local current_file = vim.api.nvim_buf_get_name(0)
 
   if current_file == "" or not current_file:match("%.md$") then
-    vim.notify("markdown-backlink: Not a markdown file", vim.log.levels.WARN)
+    vim.notify("markdown-backlinks: Not a markdown file", vim.log.levels.WARN)
     return
   end
 
@@ -120,7 +120,7 @@ function M.backlinks(opts)
       end)
 
       -- Custom mappings from actions module
-      local custom_actions = require("markdown-backlink.telescope.actions")
+      local custom_actions = require("markdown-backlinks.telescope.actions")
       map("i", "<C-v>", custom_actions.open_vsplit)
       map("n", "<C-v>", custom_actions.open_vsplit)
       map("i", "<C-s>", custom_actions.open_split)
@@ -139,8 +139,8 @@ end
 function M.orphans(opts)
   opts = opts or {}
 
-  local backlink_finder = require("markdown-backlink.backlink_finder")
-  local utils = require("markdown-backlink.utils")
+  local backlink_finder = require("markdown-backlinks.backlink_finder")
+  local utils = require("markdown-backlinks.utils")
 
   utils.notify("Searching for orphaned notes...")
 
@@ -191,7 +191,7 @@ function M.orphans(opts)
       end)
 
       -- Custom mappings
-      local custom_actions = require("markdown-backlink.telescope.actions")
+      local custom_actions = require("markdown-backlinks.telescope.actions")
       map("i", "<C-v>", custom_actions.open_vsplit)
       map("n", "<C-v>", custom_actions.open_vsplit)
       map("i", "<C-s>", custom_actions.open_split)
@@ -210,8 +210,8 @@ end
 function M.dead_links(opts)
   opts = opts or {}
 
-  local backlink_finder = require("markdown-backlink.backlink_finder")
-  local utils = require("markdown-backlink.utils")
+  local backlink_finder = require("markdown-backlinks.backlink_finder")
+  local utils = require("markdown-backlinks.utils")
 
   local check_all = opts.all or false
   local dead_links
@@ -223,7 +223,7 @@ function M.dead_links(opts)
     local current_file = vim.api.nvim_buf_get_name(0)
 
     if current_file == "" or not current_file:match("%.md$") then
-      vim.notify("markdown-backlink: Not a markdown file", vim.log.levels.WARN)
+      vim.notify("markdown-backlinks: Not a markdown file", vim.log.levels.WARN)
       return
     end
 
@@ -291,7 +291,7 @@ function M.dead_links(opts)
       end)
 
       -- Custom mappings
-      local custom_actions = require("markdown-backlink.telescope.actions")
+      local custom_actions = require("markdown-backlinks.telescope.actions")
       map("i", "<C-v>", custom_actions.open_vsplit)
       map("n", "<C-v>", custom_actions.open_vsplit)
       map("i", "<C-s>", custom_actions.open_split)

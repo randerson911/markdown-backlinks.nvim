@@ -1,4 +1,4 @@
--- Utility functions for markdown-backlink.nvim
+-- Utility functions for markdown-backlinks.nvim
 
 local M = {}
 
@@ -144,7 +144,7 @@ end
 ---@param msg string Message to show
 ---@param level number|nil Log level (default: INFO)
 function M.notify(msg, level)
-  local config = require("markdown-backlink.config")
+  local config = require("markdown-backlinks.config")
 
   -- Only show notifications if enabled
   if not config.get_value("notify") then
@@ -152,7 +152,7 @@ function M.notify(msg, level)
   end
 
   level = level or vim.log.levels.INFO
-  vim.notify("markdown-backlink: " .. msg, level)
+  vim.notify("markdown-backlinks: " .. msg, level)
 end
 
 -- Check if a line number is inside a code block
