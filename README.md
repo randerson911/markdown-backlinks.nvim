@@ -1,6 +1,6 @@
 # markdown-backlink.nvim
 
-A lightweight, event-driven NeoVim plugin that automatically manages bidirectional links in your markdown notes.
+A lightweight, event-driven NeoVim plugin that automatically manages bidirectional links in your markdown notes. This project was generated with Claude AI support. As in, I provided the idea and a couple technical details, and just troubleshooted it. 
 
 ## Purpose
 
@@ -26,7 +26,7 @@ When you create a link from one markdown file to another, this plugin automatica
 
 ```lua
 {
-  "yourusername/markdown-backlink.nvim",
+  "randerson911/markdown-backlinks.nvim",
   ft = "markdown",  -- Only load for markdown files
   opts = {
     -- Optional configuration (see Configuration section)
@@ -42,7 +42,7 @@ When you create a link from one markdown file to another, this plugin automatica
 
 ```lua
 use {
-  "yourusername/markdown-backlink.nvim",
+  "randerson911/markdown-backlinks.nvim",
   ft = "markdown",
   config = function()
     require("markdown-backlink").setup({
@@ -56,8 +56,8 @@ use {
 
 ```bash
 # Clone to your NeoVim plugin directory
-git clone https://github.com/yourusername/markdown-backlink.nvim \
-  ~/.local/share/nvim/site/pack/plugins/start/markdown-backlink.nvim
+git clone https://github.com/randerson911/markdown-backlinks.nvim \
+  ~/.local/share/nvim/site/pack/plugins/start/markdown-backlinks.nvim
 ```
 
 ## Usage
@@ -227,7 +227,7 @@ For the best markdown experience:
 
 ## Contributing
 
-Contributions welcome! Please open an issue or PR.
+I may or may not ever return to this, but it's just a proof of concept over anything else. I mostly use Obsidian so this is more another tool to try and keep my in my terminal.
 
 ## License
 
